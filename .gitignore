@@ -1,0 +1,5 @@
+.worktrees
+
+# Comparison harness output
+comparison.pdf
+__pycache__/

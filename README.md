@@ -13,7 +13,8 @@ A single Python script that:
 - Resolves `![[image.png]]` and `![[image.png|caption]]` wikilinks by searching your vault for the referenced file
 - Extracts individual pages from embedded PDFs (`![[file.pdf#page=3]]`) and renders them as high-resolution images
 - Fixes pandoc list-spacing quirks so numbered and bulleted lists render correctly
-- Produces a clean A4 PDF via pandoc and LaTeX with sensible typographic defaults (ragged right, proper list indentation, scaled images, reduced table font size)
+- Produces a clean A4 PDF via pandoc with either **LaTeX** or **Typst** as the PDF engine
+- Typst output uses the bundled **EB Garamond** font and an OUP-inspired template for classical serif typesetting
 
 ## Usage
 
@@ -22,6 +23,22 @@ python3 obsidian-to-pdf.py "My Note.md"
 ```
 
 Output: `My Note.pdf` in the same directory.
+
+### Engine selection
+
+By default (`--engine auto`), the script auto-detects the best available engine:
+
+1. **LaTeX** (xelatex, then pdflatex) — preferred when installed, best Unicode support
+2. **Typst** — lightweight alternative (~30 MB vs ~4 GB for LaTeX), fast compilation
+
+You can force a specific engine:
+
+```bash
+python3 obsidian-to-pdf.py --engine typst "My Note.md"
+python3 obsidian-to-pdf.py --engine latex "My Note.md"
+```
+
+Existing users with LaTeX installed see no behaviour change — LaTeX is always preferred in auto mode.
 
 ## Requirements
 
@@ -34,7 +51,13 @@ pip3 install pymupdf
 **System dependencies:**
 
 - [pandoc](https://pandoc.org/installing.html) — `brew install pandoc`
-- A LaTeX distribution with xelatex (preferred, for Unicode support) or pdflatex — `brew install --cask mactex`
+- At least one PDF engine:
+  - **Typst** (easy, lightweight) — `brew install typst` — requires pandoc >= 3.1.7
+  - **LaTeX** (full-featured) — `brew install --cask mactex` — provides xelatex and pdflatex
+
+### Bundled font
+
+The repository includes **EB Garamond** (SIL Open Font License) in `fonts/eb-garamond/`. This font is used automatically by the Typst engine for elegant serif output. No manual font installation is needed. LaTeX output is unaffected and uses whatever fonts your LaTeX distribution provides.
 
 ## Wikilink syntax supported
 
@@ -50,3 +73,5 @@ The script searches recursively from the markdown file's directory (treating it 
 ## Licence
 
 MIT
+
+EB Garamond font files are licensed under the [SIL Open Font License](fonts/eb-garamond/OFL.txt).
